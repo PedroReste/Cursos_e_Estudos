@@ -1,0 +1,42 @@
+import pandas as pd
+
+dados_cafe = pd.read_csv("Consumo_de_cafe_nos_Estados_Unidos_1970_1980.csv", sep=';', index_col= 'Ano')
+
+import seaborn as sns
+
+ax = sns.lmplot(x= 'Dolar por libra', y= 'Xicaras por dia por pessoa', data=dados_cafe)
+ax.fig.set_size_inches(12, 6)
+ax.fig.suptitle('Reta de Regressão - Xicaras por dia por pessoa X Dolar por libra', fontsize=16, y=1.02)
+ax.set_xlabels("Dolar por libra", fontsize=14)
+ax.set_ylabels("Xicaras por dia por pessoa", fontsize=14)
+ax
+
+dados_cafe.corr()
+
+import statsmodels.api as sm
+
+X = sm.add_constant(dados_cafe['Dolar por libra'])
+Y = dados_cafe['Xicaras por dia por pessoa']
+
+regressao_cafe = sm.OLS(Y, X).fit()
+print(regressao_cafe.summary())
+
+dados_cafe['Y_previsto'] = regressao_cafe.predict()
+dados_cafe.head()
+
+dados_cafe['u'] = regressao_cafe.resid
+dados_cafe.head()
+
+ax = sns.scatterplot(x=dados_cafe.Y_previsto, y=dados_cafe.u)
+ax.figure.set_size_inches(12, 6)
+ax.set_title('Resíduos vs Y_Previsto', fontsize=18)
+ax.set_xlabel('Y_Previsto', fontsize=14)
+ax.set_ylabel('Resíduos', fontsize=14)
+ax
+
+from scipy.stats import probplot
+import matplotlib.pyplot as plt
+
+(_, (_, _, _)) = probplot(dados_cafe.u, plot=plt)
+
+regressao_cafe.rsquared
