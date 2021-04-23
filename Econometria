@@ -1,7 +1,9 @@
+#Importando pandas e carregando o arquivo csv sobre o consumo de café entre 1970 e 1980 nos EUA por ano
 import pandas as pd
 
 dados_cafe = pd.read_csv("Consumo_de_cafe_nos_Estados_Unidos_1970_1980.csv", sep=';', index_col= 'Ano')
 
+#Motando um gráfico de regressão linear com a variável dependente sendo "Xícaras por dia por pessoa" e a variável independente "Dólar po Libra"
 import seaborn as sns
 
 ax = sns.lmplot(x= 'Dolar por libra', y= 'Xicaras por dia por pessoa', data=dados_cafe)
@@ -11,8 +13,10 @@ ax.set_xlabels("Dolar por libra", fontsize=14)
 ax.set_ylabels("Xicaras por dia por pessoa", fontsize=14)
 ax
 
+#Verificando a correlação entre as variáveis
 dados_cafe.corr()
 
+#Separando as variáveis para realizar um MQO (OLS em inglês)
 import statsmodels.api as sm
 
 X = sm.add_constant(dados_cafe['Dolar por libra'])
